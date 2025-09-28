@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Job Storage - JobConnect</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .job-item { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .no-jobs { text-align: center; color: #666; padding: 40px; }
+        button { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #2980b9; }
+        .danger { background: #e74c3c; }
+        .danger:hover { background: #c0392b; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Job Storage Inspector</h1>
+        <p>This page shows where your job data is currently stored and allows you to manage it.</p>
+        
+        <div class="controls">
+            <button onclick="loadJobs()">Refresh Jobs</button>
+            <button onclick="exportJobs()">Export Jobs (Download)</button>
+            <button onclick="clearJobs()" class="danger">Clear All Jobs</button>
+        </div>
+        
+        <div id="storage-info">
+            <h2>Storage Information</h2>
+            <p><strong>Current Storage Method:</strong> Browser localStorage</p>
+            <p><strong>Storage Key:</strong> jobPortalJobs</p>
+            <p><strong>Data Persistence:</strong> Until browser data is cleared</p>
+        </div>
+        
+        <div id="jobs-container">
+            <h2>Stored Jobs (<span id="job-count">0</span>)</h2>
+            <div id="jobs-list"></div>
+        </div>
+        
+        <div id="raw-data">
+            <h2>Raw Data (JSON)</h2>
+            <pre id="json-display">No data found</pre>
+        </div>
+    </div>
+
+    <script>
+        function loadJobs() {
+            try {
+                const jobs = JSON.parse(localStorage.getItem('jobPortalJobs') || '[]');
+                displayJobs(jobs);
+                displayRawData(jobs);
+                document.getElementById('job-count').textContent = jobs.length;
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                document.getElementById('jobs-list').innerHTML = '<p class="no-jobs">Error loading jobs: ' + error.message + '</p>';
+            }
+        }
+
+        function displayJobs(jobs) {
+            const container = document.getElementById('jobs-list');
+            
+            if (jobs.length === 0) {
+                container.innerHTML = '<p class="no-jobs">No jobs found. Post a job to see it here!</p>';
+                return;
+            }
+
+            const jobsHTML = jobs.map(job => `
+                <div class="job-item">
+                    <h3>${job.jobTitle}</h3>
+                    <p><strong>Company:</strong> ${job.companyName}</p>
+                    <p><strong>Location:</strong> ${job.location}</p>
+                    <p><strong>Type:</strong> ${job.jobType}</p>
+                    <p><strong>Salary:</strong> ${job.salaryRange}</p>
+                    <p><strong>Posted:</strong> ${new Date(job.postedDate).toLocaleString()}</p>
+                    <p><strong>Status:</strong> ${job.status}</p>
+                </div>
+            `).join('');
+            
+            container.innerHTML = jobsHTML;
+        }
+
+        function displayRawData(jobs) {
+            document.getElementById('json-display').textContent = JSON.stringify(jobs, null, 2);
+        }
+
+        function exportJobs() {
+            const jobs = JSON.parse(localStorage.getItem('jobPortalJobs') || '[]');
+            const dataStr = JSON.stringify(jobs, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'jobportal-jobs-' + new Date().toISOString().split('T')[0] + '.json';
+            link.click();
+        }
+
+        function clearJobs() {
+            if (confirm('Are you sure you want to delete ALL jobs? This cannot be undone!')) {
+                localStorage.removeItem('jobPortalJobs');
+                loadJobs();
+                alert('All jobs have been cleared.');
+            }
+        }
+
+        // Load jobs when page loads
+        document.addEventListener('DOMContentLoaded', loadJobs);
+    </script>
+</body>
+</html>

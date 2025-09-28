@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tips - JobConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
+    <style>
+        :root {
+            --primary-color: #2557a7;
+            --secondary-color: #666;
+            --accent-color: #ff6b6b;
+            --background-light: #f9f9f9;
+            --text-dark: #333;
+        }
+
+        .tips-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), #1a3f7d);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tip-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .tip-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .tip-card p {
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .faq-section {
+            background: var(--background-light);
+            padding: 3rem;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .faq-answer {
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+
+        .checklist-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .checklist li i {
+            color: var(--primary-color);
+            margin-right: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <a href="index.html">JobConnect</a>
+                </div>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <nav>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="post-job.html" class="nav-link">Post a Job</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="about.html" class="nav-link">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Resources <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown">
+                                <a href="career-advice.html" class="dropdown-item">Career Advice</a>
+                                <a href="interview-tips.html" class="dropdown-item active">Interview Tips</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="tips-container">
+        <section class="hero-section">
+            <h1>Master Your Interview</h1>
+            <p>Comprehensive tips and strategies to help you ace your next job interview and land your dream role.</p>
+        </section>
+
+        <section class="tips-grid">
+            <div class="tip-card">
+                <i class="fas fa-search"></i>
+                <h3>Research the Company</h3>
+                <p>Learn about the company's history, values, products, and recent news. Show your interviewer you've done your homework.</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-comments"></i>
+                <h3>Practice Common Questions</h3>
+                <p>Prepare answers for frequently asked questions and practice your delivery to build confidence.</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-user-tie"></i>
+                <h3>Dress Appropriately</h3>
+                <p>Research the company culture and dress one level above what employees typically wear.</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-clock"></i>
+                <h3>Be Punctual</h3>
+                <p>Arrive 10-15 minutes early. Plan your route and account for potential delays.</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-question-circle"></i>
+                <h3>Prepare Questions</h3>
+                <p>Have thoughtful questions ready about the role, team, and company culture.</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-star"></i>
+                <h3>Highlight Achievements</h3>
+                <p>Prepare specific examples of your past successes using the STAR method.</p>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <h2>Common Interview Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">Tell me about yourself.</div>
+                <div class="faq-answer">Focus on your professional journey, relevant skills, and what makes you perfect for the role. Keep it concise and engaging.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Why do you want to work here?</div>
+                <div class="faq-answer">Show your knowledge of the company and align your values and career goals with their mission.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">What are your greatest strengths?</div>
+                <div class="faq-answer">Choose strengths relevant to the position and support them with specific examples.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Where do you see yourself in five years?</div>
+                <div class="faq-answer">Show ambition while remaining realistic and relating your goals to the company's growth.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">How do you handle conflict at work?</div>
+                <div class="faq-answer">Describe your approach to conflict resolution using a specific example that had a positive outcome.</div>
+            </div>
+        </section>
+
+        <section class="checklist-section">
+            <h2>Pre-Interview Checklist</h2>
+            <ul class="checklist">
+                <li><i class="fas fa-check-circle"></i>Research the company thoroughly</li>
+                <li><i class="fas fa-check-circle"></i>Review the job description and requirements</li>
+                <li><i class="fas fa-check-circle"></i>Prepare your STAR stories for behavioral questions</li>
+                <li><i class="fas fa-check-circle"></i>Practice with a friend or mirror</li>
+                <li><i class="fas fa-check-circle"></i>Prepare questions for the interviewer</li>
+                <li><i class="fas fa-check-circle"></i>Print extra copies of your resume</li>
+                <li><i class="fas fa-check-circle"></i>Plan your outfit and try it on</li>
+                <li><i class="fas fa-check-circle"></i>Get directions to the interview location</li>
+                <li><i class="fas fa-check-circle"></i>Prepare a professional portfolio if relevant</li>
+                <li><i class="fas fa-check-circle"></i>Get a good night's sleep</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About JobConnect</h3>
+                    <p>Your trusted partner in career development and job searching. We connect talented professionals with outstanding opportunities.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="find-jobs.html">Find Jobs</a></li>
+                        <li><a href="post-job.html">Post a Job</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="career-advice.html">Career Advice</a></li>
+                        <li><a href="interview-tips.html">Interview Tips</a></li>
+                        <li><a href="resume-builder.html">Resume Builder</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@jobconnect.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 JobConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navMenu = document.getElementById('nav-menu');
+            
+            mobileMenu.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
