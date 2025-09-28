@@ -1,0 +1,30 @@
+{
+  "name": "jobportal-server",
+  "version": "1.0.0",
+  "description": "Job portal backend (Express + PostgreSQL)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "migrate": "node scripts/migrate.js",
+    "setup-db": "node scripts/setup-db.js",
+    "test-db": "node -e \"import('./src/lib/db.js').then(() => console.log('Database connection test completed'))\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5",
+    "multer": "^1.4.5-lts.1",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+

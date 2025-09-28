@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - JobConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .user-initial {
+            background: #2557a7;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .job-history {
+            margin-bottom: 2rem;
+        }
+
+        .job-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .job-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #2557a7;
+        }
+
+        .job-meta {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-card.unread {
+            border-left: 3px solid #2557a7;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .suggested-jobs h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-suggestion {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .job-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .match-score {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #e3f2fd;
+            color: #2557a7;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <a href="index.html">JobConnect</a>
+                </div>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <nav>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Resources <i class="fas fa-caret-down"></i></a>
+                            <div class="dropdown">
+                                <a href="career-advice.html" class="dropdown-item">Career Advice</a>
+                                <a href="interview-tips.html" class="dropdown-item">Interview Tips</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="user-initial" id="userInitial">LM</div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="dashboard-grid">
+            <div class="main-content">
+                <section class="job-history">
+                    <h2>Recent Job Searches</h2>
+                    <div class="job-card">
+                        <h3>Frontend Developer</h3>
+                        <div class="job-meta">
+                            <span><i class="fas fa-building"></i> TechCorp</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Remote</span>
+                            <span><i class="fas fa-clock"></i> Full-time</span>
+                        </div>
+                        <div class="job-actions">
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    <!-- More job cards here -->
+                </section>
+
+                <section class="messages">
+                    <h2>Messages</h2>
+                    <div class="message-card unread">
+                        <div class="message-meta">
+                            <strong>TechCorp HR</strong>
+                            <span>2 hours ago</span>
+                        </div>
+                        <p>Thank you for your application. We would like to schedule an interview...</p>
+                    </div>
+                    <!-- More message cards here -->
+                </section>
+            </div>
+
+            <aside class="sidebar">
+                <div class="suggested-jobs">
+                    <h2>Suggested Jobs</h2>
+                    <div class="job-suggestion">
+                        <span class="match-score">90% Match</span>
+                        <h3>Senior Frontend Developer</h3>
+                        <p>Based on your experience with React and TypeScript</p>
+                    </div>
+                    <!-- More job suggestions here -->
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About JobConnect</h3>
+                    <p>Your trusted partner in career development and job searching.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="find-jobs.html">Find Jobs</a></li>
+                        <li><a href="career-advice.html">Career Advice</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@jobconnect.com</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 JobConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get user data from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) {
+                // Redirect to login if no user data
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Set user initials
+            const userInitial = document.getElementById('userInitial');
+            const initials = userData.name.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase();
+            userInitial.textContent = initials;
+
+            // Mobile menu toggle
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navMenu = document.getElementById('nav-menu');
+            
+            mobileMenu.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

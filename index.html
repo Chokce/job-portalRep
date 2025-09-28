@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Online Job Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
+    <link rel="stylesheet" href="public/assets/css/components.css">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <!-- Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <a href="#home">JobConnect</a>
+                </div>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <nav>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link active">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="post-job.html" class="nav-link">Post a Job</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="career-advice.html" class="nav-link">Career Advice</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="about.html" class="nav-link">About Us</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navMenu = document.getElementById('nav-menu');
+            
+            mobileMenu.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+        });
+    </script>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Find Your Dream Job Today</h1>
+            <p>Search through thousands of job listings to find the perfect match for your skills and experience</p>
+            <div class="search-box">
+                <input type="text" placeholder="Job title, keywords, or company">
+                <input type="text" placeholder="City, state, or remote">
+                <button>Search Jobs</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="page-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose JobConnect?</h2>
+                <p>We provide the tools and resources to make your job search efficient and successful</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Advanced Search</h3>
+                    <p>Find jobs that match your skills and preferences with our powerful search filters</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Job Alerts</h3>
+                    <p>Get notified when new jobs that match your criteria are posted</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Easy Applications</h3>
+                    <p>Apply to multiple jobs with just a few clicks using your profile</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Listings -->
+    <section id="jobs" class="page-section job-listings">
+        <div class="container">
+            <div class="section-title">
+                <h2>Latest Job Openings</h2>
+                <p>Browse through our curated list of available positions</p>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="job-type">Job Type</label>
+                    <select id="job-type">
+                        <option value="">All Types</option>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="remote">Remote</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry">
+                        <option value="">All Industries</option>
+                        <option value="tech">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="experience">Experience Level</label>
+                    <select id="experience">
+                        <option value="">All Levels</option>
+                        <option value="entry">Entry Level</option>
+                        <option value="mid">Mid Level</option>
+                        <option value="senior">Senior Level</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="jobs-grid">
+                <!-- Job Card 1 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3 class="job-title">Frontend Developer</h3>
+                        <div class="job-company">
+                            <div class="company-logo">TC</div>
+                            <div>
+                                <h4>TechCorp Inc.</h4>
+                                <p>San Francisco, CA</p>
+                            </div>
+                        </div>
+                        <div class="job-info">
+                            <span><i class="fas fa-dollar-sign"></i> $90,000 - $120,000</span>
+                            <span><i class="fas fa-clock"></i> Full Time</span>
+                            <span><i class="fas fa-briefcase"></i> 2-4 years</span>
+                        </div>
+                    </div>
+                    <div class="job-footer">
+                        <span class="job-type full-time">Full Time</span>
+                        <button class="btn btn-primary">Apply Now</button>
+                    </div>
+                </div>
+                
+                <!-- Job Card 2 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <h3 class="job-title">UX/UI Designer</h3>
+                        <div class="job-company">
+                            <div class="company-logo">DC</div>
+                            <div>
+                                <h4>DesignCo</h4>
+                                <p>Remote</p>
+                            </div>
+                        </div>
+                        <div class="job-info">
+                            <span><i class="fas fa-dollar-sign"></i> $85,000 - $110,000</span>
+                            <span><i class="fas fa-clock"></i> Remote</span>
+                            <span><i class="fas fa-briefcase"></i> 3-5 years</span>
+                        </div>
+                    </div>
+                    <div class="job-footer">
+                        <span class="job-type remote">Remote</span>
+                        <button class="btn btn-primary">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>How JobConnect Works</h2>
+                <p>Your journey to the perfect job starts here. Follow our streamlined process designed for success.</p>
+            </div>
+            
+            <!-- For Job Seekers -->
+            <div class="workflow-container">
+                <div class="workflow-header">
+                    <div class="workflow-tab active" data-tab="job-seekers">
+                        <i class="fas fa-user-tie"></i>
+                        <span>For Job Seekers</span>
+                    </div>
+                    <div class="workflow-tab" data-tab="employers">
+                        <i class="fas fa-building"></i>
+                        <span>For Employers</span>
+                    </div>
+                </div>
+
+                <!-- Job Seekers Workflow -->
+                <div class="workflow-content active" id="job-seekers">
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="step-number">01</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Create Your Profile</h3>
+                                <p>Build a comprehensive professional profile with your skills, experience, and career preferences. Upload your resume and showcase your achievements.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Professional profile builder</li>
+                                    <li><i class="fas fa-check"></i> Resume upload & parsing</li>
+                                    <li><i class="fas fa-check"></i> Skills assessment tools</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="step-number">02</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Discover Opportunities</h3>
+                                <p>Use our intelligent search engine with advanced filters to find jobs that perfectly match your criteria. Get personalized job recommendations.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> AI-powered job matching</li>
+                                    <li><i class="fas fa-check"></i> Advanced search filters</li>
+                                    <li><i class="fas fa-check"></i> Personalized recommendations</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-paper-plane"></i>
+                                </div>
+                                <div class="step-number">03</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Apply with Confidence</h3>
+                                <p>Submit applications instantly with your saved profile. Track application status and get insights on your job search performance.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> One-click applications</li>
+                                    <li><i class="fas fa-check"></i> Application tracking</li>
+                                    <li><i class="fas fa-check"></i> Interview scheduling</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div class="step-number">04</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Land Your Dream Job</h3>
+                                <p>Connect directly with employers, participate in interviews, and negotiate offers. Our career support team is here to help you succeed.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Direct employer communication</li>
+                                    <li><i class="fas fa-check"></i> Interview preparation tools</li>
+                                    <li><i class="fas fa-check"></i> Salary negotiation guidance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employers Workflow -->
+                <div class="workflow-content" id="employers">
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="step-number">01</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Set Up Company Profile</h3>
+                                <p>Create a compelling company profile that showcases your culture, values, and opportunities. Attract top talent with detailed company information.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Company branding tools</li>
+                                    <li><i class="fas fa-check"></i> Culture showcase features</li>
+                                    <li><i class="fas fa-check"></i> Employee testimonials</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="step-number">02</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Post Job Openings</h3>
+                                <p>Create detailed job postings with our intuitive job posting tool. Set requirements, benefits, and attract the right candidates.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Easy job posting interface</li>
+                                    <li><i class="fas fa-check"></i> Template library</li>
+                                    <li><i class="fas fa-check"></i> Multi-platform distribution</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="step-number">03</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Review Applications</h3>
+                                <p>Efficiently manage and review applications with our applicant tracking system. Filter, sort, and communicate with candidates seamlessly.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Applicant tracking system</li>
+                                    <li><i class="fas fa-check"></i> Resume screening tools</li>
+                                    <li><i class="fas fa-check"></i> Candidate communication</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step">
+                            <div class="step-visual">
+                                <div class="step-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="step-number">04</div>
+                            </div>
+                            <div class="step-content">
+                                <h3>Hire Top Talent</h3>
+                                <p>Make informed hiring decisions with comprehensive candidate profiles. Schedule interviews and extend offers through our platform.</p>
+                                <ul class="step-features">
+                                    <li><i class="fas fa-check"></i> Interview scheduling</li>
+                                    <li><i class="fas fa-check"></i> Offer management</li>
+                                    <li><i class="fas fa-check"></i> Onboarding support</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Statistics -->
+            <div class="success-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>Average Time to Hire</h4>
+                        <span class="stat-number">14 Days</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>Success Rate</h4>
+                        <span class="stat-number">87%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>User Satisfaction</h4>
+                        <span class="stat-number">4.8/5</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h4>Job Match Accuracy</h4>
+                        <span class="stat-number">92%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="workflow-cta">
+                <h3>Ready to Get Started?</h3>
+                <p>Join thousands of professionals who have found success with JobConnect</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Join as Job Seeker
+                    </a>
+                    <a href="post-job.html" class="btn btn-outline">
+                        <i class="fas fa-building"></i>
+                        Post Jobs as Employer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>JobConnect</h3>
+                    <p>The leading platform for job seekers and employers to connect with opportunities.</p>
+                    <div class="social-links">
+                        <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>For Job Seekers</h3>
+                    <ul>
+                        <li><a href="#jobs">Browse Jobs</a></li>
+                        <li><a href="#resources">Career Resources</a></li>
+                        <li><a href="#resume-builder">Resume Builder</a></li>
+                        <li><a href="#">Job Alerts</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>For Employers</h3>
+                    <ul>
+                        <li><a href="#post-job">Post a Job</a></li>
+                        <li><a href="#">Search Resumes</a></li>
+                        <li><a href="#solutions">Recruiting Solutions</a></li>
+                        <li><a href="#pricing">Pricing Plans</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Ndola Mushili</li>
+                        <li><i class="fas fa-phone"></i> +260 (076) 369 19157</li>
+                        <li><i class="fas fa-envelope"></i> group2@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 JobConnect. All rights reserved. | Final Year Project - Online Job Portal</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove duplicate IDs if any
+            const loginBtns = document.querySelectorAll('#login-btn');
+            if (loginBtns.length > 1) {
+                for (let i = 1; i < loginBtns.length; i++) loginBtns[i].remove();
+            }
+            const registerBtns = document.querySelectorAll('#register-btn');
+            if (registerBtns.length > 1) {
+                for (let i = 1; i < registerBtns.length; i++) registerBtns[i].remove();
+            }
+            // Mobile menu toggle
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navMenu = document.getElementById('nav-menu');
+            mobileMenu.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Navigation functionality
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    // If link is to a section on this page (starts with #)
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        // Remove active class from all links
+                        document.querySelectorAll('.nav-link').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                        // Close mobile menu when a link is clicked
+                        if (window.innerWidth <= 968) {
+                            navMenu.classList.remove('active');
+                            mobileMenu.classList.remove('active');
+                        }
+                        // Get the target section
+                        const targetId = href.substring(1);
+                        const targetSection = document.getElementById(targetId);
+                        if (targetSection) {
+                            // Scroll to the target section
+                            window.scrollTo({
+                                top: targetSection.offsetTop - 70,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                    // If link is to another page, let browser handle navigation
+                });
+            });
+
+            // Dropdown functionality for mobile
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (window.innerWidth <= 968) {
+                    item.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('nav-link')) {
+                            const dropdown = this.querySelector('.dropdown');
+                            if (dropdown) {
+                                e.preventDefault();
+                                dropdown.classList.toggle('show');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Login and Register buttons
+            document.getElementById('login-btn').addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+
+            document.getElementById('register-btn').addEventListener('click', function() {
+                window.location.href = 'register.html';
+            });
+
+            // Update active nav link on scroll
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.page-section, .hero');
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - 100)) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === currentSection) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Apply now buttons - show modal for CV upload
+            document.querySelectorAll('.job-card .btn-primary').forEach(button => {
+                button.addEventListener('click', function() {
+                    const jobTitle = this.closest('.job-card').querySelector('.job-title').textContent;
+                    document.getElementById('apply-job-title').textContent = jobTitle;
+                    document.getElementById('apply-modal').style.display = 'flex';
+                });
+            });
+
+            // Close modal
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('apply-modal').style.display = 'none';
+            });
+
+            // Submit application
+            document.getElementById('apply-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('applicant-name').value;
+                const email = document.getElementById('applicant-email').value;
+                const cv = document.getElementById('applicant-cv').files[0];
+                if (!name || !email || !cv) {
+                    alert('Please fill all fields and upload your CV.');
+                    return;
+                }
+                alert('Application submitted! (Demo only, no backend)');
+                document.getElementById('apply-modal').style.display = 'none';
+                this.reset();
+            });
+
+            // Workflow tab functionality
+            document.querySelectorAll('.workflow-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.workflow-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.workflow-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+
+    <!-- Apply Modal -->
+    <div id="apply-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,62,80,0.7); align-items:center; justify-content:center; z-index:2000;">
+        <div style="background:#fff; border-radius:10px; max-width:400px; width:100%; padding:30px; box-shadow:0 8px 32px rgba(0,0,0,0.18); position:relative;">
+            <button id="close-modal" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:1.5rem; color:#e74c3c; cursor:pointer;">&times;</button>
+            <h2 style="color:#3498db; margin-bottom:10px;">Apply for <span id="apply-job-title"></span></h2>
+            <form id="apply-form">
+                <input type="text" id="applicant-name" placeholder="Your Name" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;" required />
+                <input type="email" id="applicant-email" placeholder="Your Email" style="width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:5px;" required />
+                <input type="file" id="applicant-cv" accept=".pdf,.doc,.docx" style="width:100%; margin-bottom:18px;" required />
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+        // Search functionality
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const keyword = document.querySelector('.search-box input:first-of-type').value;
+            const location = document.querySelector('.search-box input:nth-of-type(2)').value;
+            
+            if (keyword || location) {
+                alert(`Searching for jobs with keyword: ${keyword} in location: ${location}`);
+                
+                // Scroll to jobs section
+                window.scrollTo({
+                    top: document.getElementById('jobs').offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            } else {
+                alert('Please enter a job title, keyword, or location to search.');
+            }
+        });
+    </script>
+</body>
+</html>

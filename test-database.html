@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Connection Test - JobConnect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.loading {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .troubleshooting {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .troubleshooting h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .troubleshooting li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Database Connection Test</h1>
+        
+        <div class="test-section">
+            <h3>1. Test Database Connection</h3>
+            <button onclick="testDatabase()">Test Connection</button>
+            <div id="connectionResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Test API Endpoints</h3>
+            <button onclick="testHealthEndpoint()">Test Health Endpoint</button>
+            <button onclick="testDatabaseEndpoint()">Test Database Endpoint</button>
+            <div id="apiResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Database Setup Instructions</h3>
+            <div class="troubleshooting">
+                <h4>📋 Step-by-Step Setup:</h4>
+                <ol>
+                    <li><strong>Create .env file</strong> in the server folder with:
+                        <div class="result">DATABASE_URL=postgresql://username:password@localhost:5432/jobportal
+JWT_SECRET=your_secret_key_here
+PORT=4000</div>
+                    </li>
+                    <li><strong>Install PostgreSQL</strong> if not already installed</li>
+                    <li><strong>Create database:</strong> <code>createdb jobportal</code></li>
+                    <li><strong>Run setup:</strong> <code>npm run setup-db</code></li>
+                    <li><strong>Run migrations:</strong> <code>npm run migrate</code></li>
+                    <li><strong>Start server:</strong> <code>npm run dev</code></li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Common Issues & Solutions</h3>
+            <div class="troubleshooting">
+                <h4>❌ Common Problems:</h4>
+                <ul>
+                    <li><strong>PostgreSQL not running:</strong> Start PostgreSQL service</li>
+                    <li><strong>Wrong credentials:</strong> Check username/password in .env</li>
+                    <li><strong>Database doesn't exist:</strong> Run <code>createdb jobportal</code></li>
+                    <li><strong>Port conflicts:</strong> Ensure port 5432 is available</li>
+                    <li><strong>Permission denied:</strong> Check user privileges</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testDatabase() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<div class="status loading">Testing database connection...</div>';
+            
+            try {
+                const response = await fetch('/api/test-db');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ Database connection successful!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ Database connection failed!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ Connection test failed!</div>
+                    <div class="result">Error: ${error.message}</div>
+                    <p>Make sure your server is running on port 4000</p>
+                `;
+            }
+        }
+
+        async function testHealthEndpoint() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="status loading">Testing health endpoint...</div>';
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ Health endpoint working!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ Health endpoint failed!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ Health test failed!</div>
+                    <div class="result">Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testDatabaseEndpoint() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="status loading">Testing database endpoint...</div>';
+            
+            try {
+                const response = await fetch('/api/test-db');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">✅ Database endpoint working!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">❌ Database endpoint failed!</div>
+                        <div class="result">${JSON.stringify(data, null, 2)}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">❌ Database endpoint test failed!</div>
+                    <div class="result">Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            console.log('🔧 Database test page loaded. Click buttons to test connections.');
+        });
+    </script>
+</body>
+</html>

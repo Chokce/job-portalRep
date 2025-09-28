@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Job Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; }
+        #job-details { max-width: 1000px; margin: 0 auto; }
+        .loading { opacity: 0.5; pointer-events: none; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Job Details</h1>
+        
+        <div id="job-details">
+            <!-- Job details will be rendered here -->
+        </div>
+        
+        <div id="loading-indicator" class="text-center my-5 hidden">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading job details...</p>
+        </div>
+        
+        <div id="error-message" class="alert alert-danger hidden" role="alert"></div>
+    </div>
+
+    <!-- Test Script (optional) -->
+    <script src="test-job-details.js"></script>
+    
+    <!-- Job Service -->
+    <script type="module">
+        // Use real Firebase app + JobService
+        import './assets/js/firebase-app.js';
+        import JobService from './assets/js/services/job-service.js';
+        import { JobDetailsPage } from './assets/js/pages/job-details.js';
+        
+        // window.auth is exposed by firebase-app.js already
+        
+        // Add test job ID to URL if not present
+        if (!window.location.search) {
+            window.history.replaceState({}, '', '?id=test-job-123');
+        }
+        
+        // Initialize the job details page
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const jobService = new JobService();
+                new JobDetailsPage(jobService);
+            } catch (error) {
+                console.error('Failed to initialize job details:', error);
+                const errorElement = document.getElementById('error-message');
+                errorElement.textContent = 'Failed to initialize job details. Check console for details.';
+                errorElement.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

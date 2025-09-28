@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs - JobConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <a href="index.html">JobConnect</a>
+                </div>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="find-jobs.html" class="nav-link active">Find Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="post-job.html" class="nav-link">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="career-advice.html" class="nav-link">Career Advice</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.html" class="nav-link">About Us</a>
+                    </li>
+                </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="find-jobs-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover Your Next Career Opportunity</h1>
+                <p>Explore thousands of job opportunities from top companies worldwide and take the next step in your career journey</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">25K+</div>
+                        <div class="stat-label">Active Jobs</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5K+</div>
+                        <div class="stat-label">Companies</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Job Seekers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <div class="search-input-group">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Job title, skills, or company" id="keyword">
+                    </div>
+                    <div class="search-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" placeholder="City, state, or 'Remote'" id="location">
+                    </div>
+                    <div class="search-filters">
+                        <select id="job-type">
+                            <option value="">All Job Types</option>
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="contract">Contract</option>
+                            <option value="remote">Remote</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+                    <div class="search-filters">
+                        <select id="salary-range">
+                            <option value="">Salary Range</option>
+                            <option value="0-50k">$0 - $50,000</option>
+                            <option value="50k-80k">$50,000 - $80,000</option>
+                            <option value="80k-120k">$80,000 - $120,000</option>
+                            <option value="120k+">$120,000+</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="searchJobs()" class="search-button">
+                    <i class="fas fa-search"></i>
+                    Find Jobs
+                </button>
+            </div>
+            <div class="search-tags">
+                <span class="popular-searches">Popular Searches:</span>
+                <a href="#" class="search-tag">Software Engineer</a>
+                <a href="#" class="search-tag">Data Analyst</a>
+                <a href="#" class="search-tag">Product Manager</a>
+                <a href="#" class="search-tag">Remote</a>
+                <a href="#" class="search-tag">Entry Level</a>
+                <a href="#" class="search-tag">Marketing</a>
+                <a href="#" class="search-tag">Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section class="jobs-section">
+        <div class="container">
+            <div class="jobs-header">
+                <div class="jobs-count">
+                    <h2>Latest Job Opportunities</h2>
+                    <p>Showing <span id="job-count">8</span> jobs matching your criteria</p>
+                </div>
+                <div class="jobs-controls">
+                    <div class="sort-options">
+                        <label for="sort-by">Sort by:</label>
+                        <select id="sort-by">
+                            <option value="relevance">Relevance</option>
+                            <option value="date">Date Posted</option>
+                            <option value="salary">Salary</option>
+                            <option value="company">Company</option>
+                        </select>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                        <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="jobs-grid" id="jobs-grid">
+                <!-- Jobs will be loaded dynamically -->
+                <div class="loading-message" id="loading-message">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading job opportunities...</p>
+                </div>
+                <div class="no-jobs-message" id="no-jobs-message" style="display: none;">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>No jobs found</h3>
+                    <p>Be the first to post a job opportunity!</p>
+                    <a href="post-job.html" class="btn btn-primary">Post a Job</a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                <div class="pagination-numbers">
+                    <button class="pagination-number active">1</button>
+                    <button class="pagination-number">2</button>
+                    <button class="pagination-number">3</button>
+                    <span class="pagination-dots">...</span>
+                    <button class="pagination-number">10</button>
+                </div>
+                <button class="pagination-btn">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+    <script>
+        function applyJob(title, contactEmail) {
+            alert(`You are applying for: ${title}\n\nContact: ${contactEmail}\n\nIn a real application, this would send your application to the employer.`);
+        }
+        
+        function searchJobs() {
+            const keyword = document.getElementById('keyword').value;
+            const location = document.getElementById('location').value;
+            const jobType = document.getElementById('job-type').value;
+            const salaryRange = document.getElementById('salary-range').value;
+            
+            // Validate search input
+            if (!keyword && !location && !jobType && !salaryRange) {
+                alert('Please enter at least one search criteria');
+                return;
+            }
+
+            // Build search criteria message
+            let searchCriteria = [];
+            if (keyword) searchCriteria.push(`Keywords: ${keyword}`);
+            if (location) searchCriteria.push(`Location: ${location}`);
+            if (jobType) searchCriteria.push(`Job Type: ${jobType}`);
+            if (salaryRange) searchCriteria.push(`Salary Range: ${salaryRange}`);
+
+            alert(`Searching for jobs with:\n${searchCriteria.join('\n')}`);
+            // In a real application, this would make an API call to search for jobs
+        }
+
+        // Load jobs from PHP API
+        function loadJobs() {
+            fetch('app/api/get-jobs.php')
+                .then(response => response.json())
+                .then(jobs => {
+                    displayJobs(jobs);
+                    updateJobCount(jobs.length);
+                })
+                .catch(error => {
+                    console.error('Error loading jobs:', error);
+                    document.getElementById('loading-message').style.display = 'none';
+                    document.getElementById('no-jobs-message').style.display = 'block';
+                });
+        }
+
+        // Display jobs in the grid
+        function displayJobs(jobs) {
+            const jobsGrid = document.getElementById('jobs-grid');
+            const loadingMessage = document.getElementById('loading-message');
+            const noJobsMessage = document.getElementById('no-jobs-message');
+            
+            loadingMessage.style.display = 'none';
+            
+            if (jobs.length === 0) {
+                noJobsMessage.style.display = 'block';
+                return;
+            }
+            
+            noJobsMessage.style.display = 'none';
+            
+            const jobsHTML = jobs.map(job => {
+                const companyInitials = job.companyName.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
+                const postedDate = getTimeAgo(job.postedDate);
+                const jobTypeClass = job.jobType.toLowerCase().replace(' ', '-');
+                
+                return `
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div class="company-info">
+                                <div class="company-logo">${companyInitials}</div>
+                                <div class="company-details">
+                                    <h4 class="company-name">${job.companyName}</h4>
+                                    <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
+                                </div>
+                            </div>
+                            <div class="job-actions">
+                                <button class="save-job" title="Save Job"><i class="far fa-heart"></i></button>
+                            </div>
+                        </div>
+                        <div class="job-content">
+                            <h3 class="job-title">${job.jobTitle}</h3>
+                            <p class="job-description">${job.jobDescription.substring(0, 150)}${job.jobDescription.length > 150 ? '...' : ''}</p>
+                        </div>
+                        <div class="job-details">
+                            <div class="job-info">
+                                <span class="salary"><i class="fas fa-dollar-sign"></i> ${job.salaryRange}</span>
+                                <span class="job-type"><i class="fas fa-clock"></i> ${job.jobType}</span>
+                                ${job.experience ? `<span class="experience"><i class="fas fa-briefcase"></i> ${job.experience}</span>` : ''}
+                            </div>
+                            <div class="job-meta">
+                                <span class="posted-date">${postedDate}</span>
+                            </div>
+                        </div>
+                        <div class="job-footer">
+                            <span class="job-type-badge ${jobTypeClass}">${job.jobType}</span>
+                            <button class="btn btn-primary" onclick="applyJob('${job.jobTitle}', '${job.contactEmail}')">Apply Now</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            jobsGrid.innerHTML = jobsHTML;
+        }
+
+        // Update job count
+        function updateJobCount(count) {
+            document.getElementById('job-count').textContent = count;
+        }
+
+        // Get time ago string
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return 'Posted 1 day ago';
+            if (diffDays < 7) return `Posted ${diffDays} days ago`;
+            if (diffDays < 30) return `Posted ${Math.ceil(diffDays / 7)} week${Math.ceil(diffDays / 7) > 1 ? 's' : ''} ago`;
+            return `Posted ${Math.ceil(diffDays / 30)} month${Math.ceil(diffDays / 30) > 1 ? 's' : ''} ago`;
+        }
+
+        // Enhanced functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load jobs on page load
+            loadJobs();
+            
+            // Add click handlers for search tags
+            document.querySelectorAll('.search-tag').forEach(tag => {
+                tag.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('keyword').value = e.target.textContent;
+                    searchJobs();
+                });
+            });
+
+            // Save job functionality
+            document.querySelectorAll('.save-job').forEach(button => {
+                button.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        this.style.color = '#e74c3c';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        this.style.color = '';
+                    }
+                });
+            });
+
+            // View toggle functionality
+            document.querySelectorAll('.view-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const view = this.getAttribute('data-view');
+                    const jobsGrid = document.getElementById('jobs-grid');
+                    
+                    if (view === 'list') {
+                        jobsGrid.classList.add('list-view');
+                    } else {
+                        jobsGrid.classList.remove('list-view');
+                    }
+                });
+            });
+
+            // Pagination functionality
+            document.querySelectorAll('.pagination-number').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.pagination-number').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-column">
+                <h3>JobConnect</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Employers</h3>
+                <ul>
+                    <li><a href="post-job.html">Post a Job</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="solutions.html">Employer Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Job Seekers</h3>
+                <ul>
+                    <li><a href="find-jobs.html">Find Jobs</a></li>
+                    <li><a href="career-advice.html">Career Advice</a></li>
+                    <li><a href="resume-builder.html">Resume Builder</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 JobConnect. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (mobileMenu && navMenu) {
+                mobileMenu.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    mobileMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
