@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
@@ -5,14 +6,21 @@ import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "G-MEASUREMENT_ID"
+
+  apiKey: "AIzaSyAV6TaVoniaosm5zTZr7TCH5R-TFt4KOLk",
+
+  authDomain: "job-portal-mq0x6.firebaseapp.com",
+
+  projectId: "job-portal-mq0x6",
+
+  storageBucket: "job-portal-mq0x6.firebasestorage.app",
+
+  messagingSenderId: "872434775175",
+
+  appId: "1:872434775175:web:bd99a08b0f78af8edef422"
+
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

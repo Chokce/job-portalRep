@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,20 +150,25 @@
                             <a href="index.html" class="nav-link">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                            <a href="find-jobs.html" class´="nav-link">Find Jobs</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">Resources <i class="fas fa-caret-down"></i></a>
-                            <div class="dropdown">
-                                <a href="career-advice.html" class="dropdown-item">Career Advice</a>
-                                <a href="interview-tips.html" class="dropdown-item">Interview Tips</a>
-                            </div>
+                            <a href="post-job.html" class="nav-link">Post a Job</a>
                         </li>
                         <li class="nav-item">
-                            <div class="user-initial" id="userInitial">LM</div>
+                            <a href="career-advice.html" class="nav-link">Career Advice</a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="user-initial" id="userInitial"></div>
                         </li>
                     </ul>
                 </nav>
+                 <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+                </div>
             </div>
         </div>
     </header>
@@ -243,33 +249,7 @@
         </div>
     </footer>
 
-    <script>
-        // Get user data from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const userData = JSON.parse(localStorage.getItem('user'));
-            if (!userData) {
-                // Redirect to login if no user data
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Set user initials
-            const userInitial = document.getElementById('userInitial');
-            const initials = userData.name.split(' ')
-                .map(n => n[0])
-                .join('')
-                .toUpperCase();
-            userInitial.textContent = initials;
-
-            // Mobile menu toggle
-            const mobileMenu = document.getElementById('mobile-menu');
-            const navMenu = document.getElementById('nav-menu');
-            
-            mobileMenu.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-                mobileMenu.classList.toggle('active');
-            });
-        });
-    </script>
+    <script type="module" src="public/assets/js/firebase-init.js"></script>
+    <script type="module" src="public/assets/js/pages/dashboard.js"></script>
 </body>
 </html>

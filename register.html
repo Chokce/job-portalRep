@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,8 +44,10 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="register.html" class="btn btn-primary active">Register</a>
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary active" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
                 </div>
             </div>
         </div>
@@ -53,26 +56,39 @@
     <main class="auth-container">
         <div class="auth-box">
             <h2>Create Account</h2>
-            <form action="login.html" method="get">
+            <form id="registerForm">
                 <div class="form-group">
-                    <input type="text" placeholder="Full Name" required>
+                    <input type="text" id="firstName" placeholder="First Name" required>
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="Email Address" required>
+                    <input type="text" id="lastName" placeholder="Last Name" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email Address" required>
                     <i class="fas fa-envelope"></i>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Password" required minlength="8">
+                    <select id="role" required>
+                        <option value="">Select Role</option>
+                        <option value="job-seeker">Job Seeker</option>
+                        <option value="employer">Employer</option>
+                    </select>
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required minlength="8">
                     <i class="fas fa-lock"></i>
                     <div class="validation-message">Password must be at least 8 characters long</div>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="Confirm Password" required>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
                     <i class="fas fa-lock"></i>
                 </div>
                 <button type="submit">Create Account</button>
             </form>
+            <div id="messageBox" class="message-box" style="display: none;"></div>
             <div class="link">
                 <span>Already have an account? </span>
                 <a href="login.html">Login</a>
@@ -92,6 +108,46 @@
                 </div>
             </div>
     </main>
+
+    <script type="module">
+        import authService from './public/assets/js/services/auth-service.js';
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const firstName = this.querySelector('#firstName').value;
+            const lastName = this.querySelector('#lastName').value;
+            const email = this.querySelector('#email').value;
+            const role = this.querySelector('#role').value;
+            const password = this.querySelector('#password').value;
+            const confirmPassword = this.querySelector('#confirmPassword').value;
+            const messageBox = document.getElementById('messageBox');
+
+            if (password !== confirmPassword) {
+                messageBox.className = 'message-box error';
+                messageBox.textContent = 'Passwords do not match';
+                messageBox.style.display = 'block';
+                return;
+            }
+
+            const userData = { firstName, lastName, email, role };
+            
+            const result = await authService.register(email, password, userData);
+            
+            if (result.success) {
+                messageBox.className = 'message-box success';
+                messageBox.textContent = 'Registration successful! Redirecting to login...';
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                messageBox.className = 'message-box error';
+                messageBox.textContent = result.message;
+                messageBox.style.display = 'block';
+            }
+        });
+    </script>
 
     <footer>
         <div class="container">
@@ -115,7 +171,7 @@
                         <li><a href="#">Job Alerts</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
+                <div class_name="footer-column">
                     <h3>For Employers</h3>
                     <ul>
                         <li><a href="post-job.html">Post a Job</a></li>

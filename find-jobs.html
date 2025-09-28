@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +24,7 @@
                 </div>
 
                 <nav>
-                <ul class="nav-menu">
+                <ul class="nav-menu" id="nav-menu">
                     <li class="nav-item">
                         <a href="index.html" class="nav-link">Home</a>
                     </li>
@@ -43,8 +44,10 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="register.html" class="btn btn-primary">Register</a>
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
                 </div>
             </div>
         </div>
@@ -100,14 +103,14 @@
                     <div class="search-filters">
                         <select id="salary-range">
                             <option value="">Salary Range</option>
-                            <option value="0-50k">$0 - $50,000</option>
-                            <option value="50k-80k">$50,000 - $80,000</option>
-                            <option value="80k-120k">$80,000 - $120,000</option>
-                            <option value="120k+">$120,000+</option>
+                            <option value="0-50000">$0 - $50,000</option>
+                            <option value="50000-80000">$50,000 - $80,000</option>
+                            <option value="80000-120000">$80,000 - $120,000</option>
+                            <option value="120000">$120,000+</option>
                         </select>
                     </div>
                 </div>
-                <button onclick="searchJobs()" class="search-button">
+                <button class="search-button">
                     <i class="fas fa-search"></i>
                     Find Jobs
                 </button>
@@ -131,7 +134,7 @@
             <div class="jobs-header">
                 <div class="jobs-count">
                     <h2>Latest Job Opportunities</h2>
-                    <p>Showing <span id="job-count">8</span> jobs matching your criteria</p>
+                    <p>Showing <span id="job-count">0</span> jobs matching your criteria</p>
                 </div>
                 <div class="jobs-controls">
                     <div class="sort-options">
@@ -177,183 +180,7 @@
             </div>
         </div>
     </section>
-    <script>
-        function applyJob(title, contactEmail) {
-            alert(`You are applying for: ${title}\n\nContact: ${contactEmail}\n\nIn a real application, this would send your application to the employer.`);
-        }
-        
-        function searchJobs() {
-            const keyword = document.getElementById('keyword').value;
-            const location = document.getElementById('location').value;
-            const jobType = document.getElementById('job-type').value;
-            const salaryRange = document.getElementById('salary-range').value;
-            
-            // Validate search input
-            if (!keyword && !location && !jobType && !salaryRange) {
-                alert('Please enter at least one search criteria');
-                return;
-            }
-
-            // Build search criteria message
-            let searchCriteria = [];
-            if (keyword) searchCriteria.push(`Keywords: ${keyword}`);
-            if (location) searchCriteria.push(`Location: ${location}`);
-            if (jobType) searchCriteria.push(`Job Type: ${jobType}`);
-            if (salaryRange) searchCriteria.push(`Salary Range: ${salaryRange}`);
-
-            alert(`Searching for jobs with:\n${searchCriteria.join('\n')}`);
-            // In a real application, this would make an API call to search for jobs
-        }
-
-        // Load jobs from PHP API
-        function loadJobs() {
-            fetch('app/api/get-jobs.php')
-                .then(response => response.json())
-                .then(jobs => {
-                    displayJobs(jobs);
-                    updateJobCount(jobs.length);
-                })
-                .catch(error => {
-                    console.error('Error loading jobs:', error);
-                    document.getElementById('loading-message').style.display = 'none';
-                    document.getElementById('no-jobs-message').style.display = 'block';
-                });
-        }
-
-        // Display jobs in the grid
-        function displayJobs(jobs) {
-            const jobsGrid = document.getElementById('jobs-grid');
-            const loadingMessage = document.getElementById('loading-message');
-            const noJobsMessage = document.getElementById('no-jobs-message');
-            
-            loadingMessage.style.display = 'none';
-            
-            if (jobs.length === 0) {
-                noJobsMessage.style.display = 'block';
-                return;
-            }
-            
-            noJobsMessage.style.display = 'none';
-            
-            const jobsHTML = jobs.map(job => {
-                const companyInitials = job.companyName.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
-                const postedDate = getTimeAgo(job.postedDate);
-                const jobTypeClass = job.jobType.toLowerCase().replace(' ', '-');
-                
-                return `
-                    <div class="job-card">
-                        <div class="job-card-header">
-                            <div class="company-info">
-                                <div class="company-logo">${companyInitials}</div>
-                                <div class="company-details">
-                                    <h4 class="company-name">${job.companyName}</h4>
-                                    <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
-                                </div>
-                            </div>
-                            <div class="job-actions">
-                                <button class="save-job" title="Save Job"><i class="far fa-heart"></i></button>
-                            </div>
-                        </div>
-                        <div class="job-content">
-                            <h3 class="job-title">${job.jobTitle}</h3>
-                            <p class="job-description">${job.jobDescription.substring(0, 150)}${job.jobDescription.length > 150 ? '...' : ''}</p>
-                        </div>
-                        <div class="job-details">
-                            <div class="job-info">
-                                <span class="salary"><i class="fas fa-dollar-sign"></i> ${job.salaryRange}</span>
-                                <span class="job-type"><i class="fas fa-clock"></i> ${job.jobType}</span>
-                                ${job.experience ? `<span class="experience"><i class="fas fa-briefcase"></i> ${job.experience}</span>` : ''}
-                            </div>
-                            <div class="job-meta">
-                                <span class="posted-date">${postedDate}</span>
-                            </div>
-                        </div>
-                        <div class="job-footer">
-                            <span class="job-type-badge ${jobTypeClass}">${job.jobType}</span>
-                            <button class="btn btn-primary" onclick="applyJob('${job.jobTitle}', '${job.contactEmail}')">Apply Now</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            jobsGrid.innerHTML = jobsHTML;
-        }
-
-        // Update job count
-        function updateJobCount(count) {
-            document.getElementById('job-count').textContent = count;
-        }
-
-        // Get time ago string
-        function getTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 1) return 'Posted 1 day ago';
-            if (diffDays < 7) return `Posted ${diffDays} days ago`;
-            if (diffDays < 30) return `Posted ${Math.ceil(diffDays / 7)} week${Math.ceil(diffDays / 7) > 1 ? 's' : ''} ago`;
-            return `Posted ${Math.ceil(diffDays / 30)} month${Math.ceil(diffDays / 30) > 1 ? 's' : ''} ago`;
-        }
-
-        // Enhanced functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load jobs on page load
-            loadJobs();
-            
-            // Add click handlers for search tags
-            document.querySelectorAll('.search-tag').forEach(tag => {
-                tag.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('keyword').value = e.target.textContent;
-                    searchJobs();
-                });
-            });
-
-            // Save job functionality
-            document.querySelectorAll('.save-job').forEach(button => {
-                button.addEventListener('click', function() {
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('far')) {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        this.style.color = '#e74c3c';
-                    } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        this.style.color = '';
-                    }
-                });
-            });
-
-            // View toggle functionality
-            document.querySelectorAll('.view-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const view = this.getAttribute('data-view');
-                    const jobsGrid = document.getElementById('jobs-grid');
-                    
-                    if (view === 'list') {
-                        jobsGrid.classList.add('list-view');
-                    } else {
-                        jobsGrid.classList.remove('list-view');
-                    }
-                });
-            });
-
-            // Pagination functionality
-            document.querySelectorAll('.pagination-number').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('.pagination-number').forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-    </script>
-
+    
     <footer>
         <div class="container footer-content">
             <div class="footer-column">
@@ -396,19 +223,7 @@
         </div>
     </footer>
 
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const navMenu = document.querySelector('.nav-menu');
-            
-            if (mobileMenu && navMenu) {
-                mobileMenu.addEventListener('click', function() {
-                    navMenu.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                });
-            }
-        });
-    </script>
+    <script type="module" src="public/assets/js/firebase-init.js"></script>
+    <script type="module" src="public/assets/js/pages/find-jobs.js"></script>
 </body>
 </html>

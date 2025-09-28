@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +24,7 @@
                 </div>
 
                 <nav>
-                <ul class="nav-menu">
+                <ul class="nav-menu" id="nav-menu">
                     <li class="nav-item">
                         <a href="index.html" class="nav-link">Home</a>
                     </li>
@@ -43,204 +44,188 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="register.html" class="btn btn-primary">Register</a>
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="post-job-hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Post Your Job Opening</h1>
-                <p>Reach thousands of qualified candidates and find your next great hire</p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">50,000+</span>
-                        <span class="stat-label">Active Candidates</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">95%</span>
-                        <span class="stat-label">Success Rate</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">14 Days</span>
-                        <span class="stat-label">Avg. Time to Hire</span>
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="post-job-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Post Your Job Opening</h1>
+                    <p>Reach thousands of qualified candidates and find your next great hire</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">50,000+</span>
+                            <span class="stat-label">Active Candidates</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Success Rate</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">14 Days</span>
+                            <span class="stat-label">Avg. Time to Hire</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Job Posting Form Section -->
-    <section class="post-job-section">
-        <div class="container">
-            <div class="form-wrapper">
-                <div class="form-header">
-                    <h2>Job Details</h2>
-                    <p>Fill out the information below to post your job opening</p>
+        <!-- Job Posting Form Section -->
+        <section class="post-job-section">
+            <div class="container">
+                <div class="form-wrapper">
+                    <div class="form-header">
+                        <h2>Job Details</h2>
+                        <p>Fill out the information below to post your job opening</p>
+                    </div>
+                    
+                    <form class="post-job-form" id="jobPostForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="title" class="required-field">
+                                    <i class="fas fa-briefcase"></i>
+                                    Job Title
+                                </label>
+                                <input type="text" id="title" name="title" placeholder="e.g., Senior Software Engineer" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="company" class="required-field">
+                                    <i class="fas fa-building"></i>
+                                    Company Name
+                                </label>
+                                <input type="text" id="company" name="company" placeholder="Your company name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="location" class="required-field">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Location
+                                </label>
+                                <input type="text" id="location" name="location" placeholder="e.g., New York, NY (or Remote)" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="jobType" class="required-field">
+                                    <i class="fas fa-clock"></i>
+                                    Job Type
+                                </label>
+                                <select id="jobType" name="jobType" required>
+                                    <option value="">Select Job Type</option>
+                                    <option value="Full Time">Full Time</option>
+                                    <option value="Part Time">Part Time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Internship">Internship</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="salaryMin" class="required-field">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Minimum Salary
+                                </label>
+                                <input type="number" id="salaryMin" name="salaryMin" placeholder="e.g., 80000" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="salaryMax" class="required-field">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Maximum Salary
+                                </label>
+                                <input type="number" id="salaryMax" name="salaryMax" placeholder="e.g., 100000" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="description" class="required-field">
+                                <i class="fas fa-file-alt"></i>
+                                Job Description
+                            </label>
+                            <textarea id="description" name="description" placeholder="Describe the role, responsibilities, qualifications, and benefits" rows="8" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contactEmail" class="required-field">
+                                    <i class="fas fa-envelope"></i>
+                                    Contact Email
+                                </label>
+                                <input type="email" id="contactEmail" name="contactEmail" placeholder="hr@yourcompany.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="applicationDeadline">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Application Deadline
+                                </label>
+                                <input type="date" id="applicationDeadline" name="applicationDeadline">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" id="previewBtn">
+                                <i class="fas fa-eye"></i>
+                                Preview Job
+                            </button>
+                            <button type="submit" class="btn btn-primary submit-job-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Post Job
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 
-                <form class="post-job-form" id="jobPostForm" action="app/api/post-job.php" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="jobTitle" class="required-field">
-                                <i class="fas fa-briefcase"></i>
-                                Job Title
-                            </label>
-                            <input type="text" id="jobTitle" name="jobTitle" placeholder="e.g., Senior Software Engineer" required>
-                            <span class="form-tip">Be specific with the job title to attract the right candidates</span>
+                <!-- Pricing Info Sidebar -->
+                <div class="pricing-sidebar">
+                    <div class="pricing-card">
+                        <h3>Job Posting Package</h3>
+                        <div class="price">
+                            <span class="currency">$</span>
+                            <span class="amount">99</span>
+                            <span class="period">/30 days</span>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="companyName" class="required-field">
-                                <i class="fas fa-building"></i>
-                                Company Name
-                            </label>
-                            <input type="text" id="companyName" name="companyName" placeholder="Your company name" required>
-                        </div>
+                        <ul class="features">
+                            <li><i class="fas fa-check"></i> 30-day job listing</li>
+                            <li><i class="fas fa-check"></i> Unlimited applications</li>
+                            <li><i class="fas fa-check"></i> Resume database access</li>
+                            <li><i class="fas fa-check"></i> Email notifications</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                        </ul>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="location" class="required-field">
-                                <i class="fas fa-map-marker-alt"></i>
-                                Location
-                            </label>
-                            <input type="text" id="location" name="location" placeholder="e.g., New York, NY (or Remote)" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="jobType" class="required-field">
-                                <i class="fas fa-clock"></i>
-                                Job Type
-                            </label>
-                            <select id="jobType" name="jobType" required>
-                                <option value="">Select Job Type</option>
-                                <option value="Full Time">Full Time</option>
-                                <option value="Part Time">Part Time</option>
-                                <option value="Contract">Contract</option>
-                                <option value="Remote">Remote</option>
-                                <option value="Internship">Internship</option>
-                            </select>
-                        </div>
+                    
+                    <div class="tips-card">
+                        <h4>💡 Tips for Better Results</h4>
+                        <ul>
+                            <li>Use clear, specific job titles</li>
+                            <li>Include salary range to attract more candidates</li>
+                            <li>Highlight unique benefits and company culture</li>
+                            <li>Be specific about required skills and experience</li>
+                            <li>Respond to applications promptly</li>
+                        </ul>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="salaryRange" class="required-field">
-                                <i class="fas fa-dollar-sign"></i>
-                                Salary Range
-                            </label>
-                            <input type="text" id="salaryRange" name="salaryRange" placeholder="e.g., $80,000 - $100,000 per year" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="experience">
-                                <i class="fas fa-user-graduate"></i>
-                                Experience Level
-                            </label>
-                            <select id="experience" name="experience">
-                                <option value="">Select Experience Level</option>
-                                <option value="Entry Level">Entry Level (0-2 years)</option>
-                                <option value="Mid Level">Mid Level (2-5 years)</option>
-                                <option value="Senior Level">Senior Level (5+ years)</option>
-                                <option value="Executive">Executive Level</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="jobDescription" class="required-field">
-                            <i class="fas fa-file-alt"></i>
-                            Job Description
-                        </label>
-                        <textarea id="jobDescription" name="jobDescription" placeholder="Describe the role, responsibilities, qualifications, and benefits" rows="8" required></textarea>
-                        <span class="form-tip">Include key responsibilities, requirements, and what makes this role unique</span>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="requirements">
-                            <i class="fas fa-list-check"></i>
-                            Requirements & Qualifications
-                        </label>
-                        <textarea id="requirements" name="requirements" placeholder="List the required skills, education, and experience" rows="5"></textarea>
-                        <span class="form-tip">Separate each requirement with a new line</span>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="benefits">
-                            <i class="fas fa-gift"></i>
-                            Benefits & Perks
-                        </label>
-                        <textarea id="benefits" name="benefits" placeholder="List the benefits, perks, and what makes your company great" rows="4"></textarea>
-                        <span class="form-tip">Highlight what makes your company an attractive place to work</span>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contactEmail" class="required-field">
-                                <i class="fas fa-envelope"></i>
-                                Contact Email
-                            </label>
-                            <input type="email" id="contactEmail" name="contactEmail" placeholder="hr@yourcompany.com" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="applicationDeadline">
-                                <i class="fas fa-calendar-alt"></i>
-                                Application Deadline
-                            </label>
-                            <input type="date" id="applicationDeadline" name="applicationDeadline">
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-outline" id="previewBtn">
-                            <i class="fas fa-eye"></i>
-                            Preview Job
-                        </button>
-                        <button type="submit" class="btn btn-primary submit-job-btn">
-                            <i class="fas fa-paper-plane"></i>
-                            Post Job
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <!-- Pricing Info Sidebar -->
-            <div class="pricing-sidebar">
-                <div class="pricing-card">
-                    <h3>Job Posting Package</h3>
-                    <div class="price">
-                        <span class="currency">$</span>
-                        <span class="amount">99</span>
-                        <span class="period">/30 days</span>
-                    </div>
-                    <ul class="features">
-                        <li><i class="fas fa-check"></i> 30-day job listing</li>
-                        <li><i class="fas fa-check"></i> Unlimited applications</li>
-                        <li><i class="fas fa-check"></i> Resume database access</li>
-                        <li><i class="fas fa-check"></i> Email notifications</li>
-                        <li><i class="fas fa-check"></i> Priority support</li>
-                    </ul>
-                </div>
-                
-                <div class="tips-card">
-                    <h4>💡 Tips for Better Results</h4>
-                    <ul>
-                        <li>Use clear, specific job titles</li>
-                        <li>Include salary range to attract more candidates</li>
-                        <li>Highlight unique benefits and company culture</li>
-                        <li>Be specific about required skills and experience</li>
-                        <li>Respond to applications promptly</li>
-                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
+
+    <div id="auth-prompt" class="container" style="display: none; text-align: center; padding: 50px;">
+        <h2>Please Log In to Post a Job</h2>
+        <p>You must be logged in to post a job. Please log in or create an account to continue.</p>
+        <a href="login.html" class="btn btn-primary">Login</a>
+        <a href="register.html" class="btn btn-outline">Register</a>
+    </div>
 
     <footer>
         <div class="container">
@@ -288,159 +273,24 @@
         </div>
     </footer>
 
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const navMenu = document.querySelector('.nav-menu');
-            
-            if (mobileMenu && navMenu) {
-                mobileMenu.addEventListener('click', function() {
-                    navMenu.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                });
-            }
+    <script type="module">
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { auth } from "./public/assets/js/firebase-init.js";
 
-            // Job posting form functionality
-            const jobForm = document.getElementById('jobPostForm');
-            const previewBtn = document.getElementById('previewBtn');
-            
-            // Form validation and submission
-            jobForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form data
-                const formData = new FormData(jobForm);
-                const jobData = Object.fromEntries(formData);
-                
-                // Basic validation
-                if (!jobData.jobTitle || !jobData.companyName || !jobData.location || 
-                    !jobData.jobType || !jobData.jobDescription || !jobData.salaryRange || 
-                    !jobData.contactEmail) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
-                
-                // Email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(jobData.contactEmail)) {
-                    alert('Please enter a valid email address.');
-                    return;
-                }
-                
-                // Show loading state
-                const submitBtn = document.querySelector('.submit-job-btn');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting Job...';
-                submitBtn.disabled = true;
-                
-                // Submit form data to PHP backend
-                fetch('app/api/post-job.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Job posted successfully! Your listing is now saved to the jobs.json file and visible to job seekers.');
-                        jobForm.reset();
-                    } else {
-                        alert('Error: ' + (data.error || 'Failed to post job'));
-                        if (data.debug) {
-                            console.log('Debug info:', data.debug);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while posting the job. Please make sure you have a PHP server running.');
-                })
-                .finally(() => {
-                    // Reset button state
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                });
-            });
-            
-            // Preview functionality
-            previewBtn.addEventListener('click', function() {
-                const formData = new FormData(jobForm);
-                const jobData = Object.fromEntries(formData);
-                
-                if (!jobData.jobTitle || !jobData.companyName) {
-                    alert('Please fill in at least the job title and company name to preview.');
-                    return;
-                }
-                
-                // Create preview modal content
-                const previewContent = `
-                    <div style="max-width: 600px; margin: 0 auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                        <h2 style="color: #2c3e50; margin-bottom: 10px;">${jobData.jobTitle || 'Job Title'}</h2>
-                        <p style="color: #666; margin-bottom: 20px;"><strong>${jobData.companyName || 'Company Name'}</strong> • ${jobData.location || 'Location'}</p>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <strong>Job Type:</strong> ${jobData.jobType || 'Not specified'}<br>
-                            <strong>Salary:</strong> ${jobData.salaryRange || 'Not specified'}<br>
-                            <strong>Experience:</strong> ${jobData.experience || 'Not specified'}
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <h4>Job Description:</h4>
-                            <p style="white-space: pre-line;">${jobData.jobDescription || 'No description provided'}</p>
-                        </div>
-                        
-                        ${jobData.requirements ? `
-                        <div style="margin-bottom: 20px;">
-                            <h4>Requirements:</h4>
-                            <p style="white-space: pre-line;">${jobData.requirements}</p>
-                        </div>
-                        ` : ''}
-                        
-                        ${jobData.benefits ? `
-                        <div style="margin-bottom: 20px;">
-                            <h4>Benefits:</h4>
-                            <p style="white-space: pre-line;">${jobData.benefits}</p>
-                        </div>
-                        ` : ''}
-                        
-                        <button onclick="this.parentElement.parentElement.remove()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close Preview</button>
-                    </div>
-                `;
-                
-                // Create and show preview modal
-                const modal = document.createElement('div');
-                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; box-sizing: border-box;';
-                modal.innerHTML = previewContent;
-                document.body.appendChild(modal);
-                
-                // Close on background click
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-            });
-            
-            // Character counter for textareas
-            const textareas = document.querySelectorAll('textarea');
-            textareas.forEach(textarea => {
-                const maxLength = textarea.getAttribute('maxlength');
-                if (maxLength) {
-                    const counter = document.createElement('div');
-                    counter.style.cssText = 'text-align: right; font-size: 0.8rem; color: #666; margin-top: 5px;';
-                    textarea.parentNode.appendChild(counter);
-                    
-                    function updateCounter() {
-                        const remaining = maxLength - textarea.value.length;
-                        counter.textContent = `${remaining} characters remaining`;
-                        counter.style.color = remaining < 50 ? '#e74c3c' : '#666';
-                    }
-                    
-                    textarea.addEventListener('input', updateCounter);
-                    updateCounter();
-                }
-            });
+        const mainContent = document.getElementById("main-content");
+        const authPrompt = document.getElementById("auth-prompt");
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                mainContent.style.display = "block";
+                authPrompt.style.display = "none";
+            } else {
+                mainContent.style.display = "none";
+                authPrompt.style.display = "block";
+            }
         });
     </script>
+
+    <script type="module" src="public/assets/js/pages/post-job.js"></script>
 </body>
 </html>

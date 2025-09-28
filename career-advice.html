@@ -43,8 +43,10 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="register.html" class="btn btn-primary">Register</a>
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
                 </div>
             </div>
         </div>
@@ -240,6 +242,38 @@
             </div>
         </div>
     </footer>
+
+    <script type="module">
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { auth } from "./public/assets/js/firebase-init.js";
+        import authService from "./public/assets/js/services/auth-service.js";
+
+        const loginLink = document.getElementById("login-link");
+        const registerLink = document.getElementById("register-link");
+        const dashboardLink = document.getElementById("dashboard-link");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginLink.style.display = "none";
+                registerLink.style.display = "none";
+                dashboardLink.style.display = "block";
+                logoutBtn.style.display = "block";
+            } else {
+                loginLink.style.display = "block";
+                registerLink.style.display = "block";
+                dashboardLink.style.display = "none";
+                logoutBtn.style.display = "none";
+            }
+        });
+
+        logoutBtn.addEventListener("click", async () => {
+            const result = await authService.logout();
+            if (result.success) {
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 
     <script>
         // Mobile menu toggle

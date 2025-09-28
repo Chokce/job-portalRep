@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - JobConnect</title>
+    <title>Job Details - JobConnect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
@@ -24,12 +24,12 @@
                 </div>
 
                 <nav>
-                <ul class="nav-menu">
+                <ul class="nav-menu" id="nav-menu">
                     <li class="nav-item">
                         <a href="index.html" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                        <a href="find-jobs.html" class="nav-link active">Find Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a href="post-job.html" class="nav-link">Post a Job</a>
@@ -44,7 +44,7 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline active" id="login-link">Login</a>
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
                     <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
                     <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
                     <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
@@ -53,76 +53,11 @@
         </div>
     </header>
 
-    <main class="auth-container">
-        <div class="auth-box">
-            <h1>Welcome Back</h1>
-            <form id="loginForm">
-                <div class="form-group">
-                    <input type="email" name="email" id="email" placeholder="Email Address" required>
-                    <i class="fas fa-user"></i>
-                    <div class="validation-message"></div>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" id="password" placeholder="Password" required>
-                    <i class="fas fa-lock"></i>
-                    <div class="validation-message"></div>
-                </div>
-                <div class="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            <div id="messageBox" class="message-box" style="display: none;"></div>
-            <div class="link">
-                <span>Don't have an account? </span>
-                <a href="register.html">Register</a>
-            </div>
-            <div class="social-auth">
-                <span>Or continue with</span>
-                <div class="social-buttons">
-                    <a href="https://facebook.com" class="social-button facebook" target="_blank" rel="noopener" title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://twitter.com" class="social-button twitter" target="_blank" rel="noopener" title="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://linkedin.com" class="social-button linkedin" target="_blank" rel="noopener" title="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                </div>
-            </div>
+    <main class="job-details-container">
+        <div id="job-details-content">
+            <!-- Job details will be loaded here -->
+        </div>
     </main>
-
-    <script type="module">
-        import authService from './public/assets/js/services/auth-service.js';
-
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = this.querySelector('#email').value;
-            const password = this.querySelector('#password').value;
-            const messageBox = document.getElementById('messageBox');
-            
-            const result = await authService.login(email, password);
-            
-            if (result.success) {
-                messageBox.className = 'message-box success';
-                messageBox.textContent = 'Login successful!';
-                messageBox.style.display = 'block';
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            } else {
-                messageBox.className = 'message-box error';
-                if (result.message.includes('auth/invalid-login-credentials')) {
-                    messageBox.textContent = 'Invalid email or password. Please try again.';
-                } else {
-                    messageBox.textContent = result.message;
-                }
-                messageBox.style.display = 'block';
-            }
-        });
-    </script>
 
     <footer>
         <div class="container">
@@ -170,19 +105,41 @@
         </div>
     </footer>
 
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const navMenu = document.querySelector('.nav-menu');
-            
-            if (mobileMenu && navMenu) {
-                mobileMenu.addEventListener('click', function() {
-                    navMenu.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                });
+    <script type="module">
+        import jobService from './public/assets/js/services/job-service.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const jobDetailsContent = document.getElementById('job-details-content');
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('id');
+
+            if (jobId) {
+                const result = await jobService.getJob(jobId);
+                if (result.success) {
+                    const job = result.job;
+                    jobDetailsContent.innerHTML = `
+                        <div class="job-details-header">
+                            <h1>${job.title}</h1>
+                            <p>${job.company} - ${job.location}</p>
+                        </div>
+                        <div class="job-details-body">
+                            <p>${job.description}</p>
+                            <p><strong>Salary:</strong> ${job.salaryMin} - ${job.salaryMax}</p>
+                            <p><strong>Job Type:</strong> ${job.jobType}</p>
+                            <p><strong>Experience Level:</strong> ${job.experienceLevel}</p>
+                        </div>
+                        <div class="job-details-footer">
+                            <button class="btn btn-primary">Apply Now</button>
+                        </div>
+                    `;
+                } else {
+                    jobDetailsContent.innerHTML = `<p>Job not found.</p>`;
+                }
+            } else {
+                jobDetailsContent.innerHTML = `<p>No job selected.</p>`;
             }
         });
     </script>
+
 </body>
 </html>
