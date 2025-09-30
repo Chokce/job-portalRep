@@ -6,7 +6,7 @@ import {
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { auth, db } from './firebase-init.js';
+import { auth, db } from '../firebase-init.js';
 
 class AuthService {
     constructor() {

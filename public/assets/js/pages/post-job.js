@@ -1,6 +1,7 @@
-
+  
 import JobService from '../services/job-service.js';
 import { serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+import { auth } from '../firebase-init.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const jobForm = document.getElementById('jobPostForm');
@@ -9,6 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     jobForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        if (!auth.currentUser) {
+            alert('You must be logged in to post a job.');
+            return;
+        }
+
         const formData = new FormData(jobForm);
         const jobData = Object.fromEntries(formData);
         
@@ -31,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = true;
 
         jobData.createdAt = serverTimestamp();
+        jobData.postedBy = auth.currentUser.uid;
 
         const result = await JobService.addJob(jobData);
 
