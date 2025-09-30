@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const admin = require('firebase-admin');
 require('dotenv').config();
 
 const app = express();
@@ -11,13 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jobportal', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Initialize Firebase Admin SDK
+const serviceAccount = require('./serviceAccountKey.json'); // You'll need to create this file
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));

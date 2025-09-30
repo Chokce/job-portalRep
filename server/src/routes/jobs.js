@@ -1,27 +1,75 @@
-import { Router } from 'express';
-import { pool } from '../lib/db.js';
-import { requireAuth } from '../middleware/requireAuth.js';
+const express = require('express');
+const router = express.Router();
+const {
+    createJob,
+    getAllJobs,
+    getJobById,
+    createApplication
+} = require('../lib/jsonDatabase');
 
-const router = Router();
-
+// Route to get all jobs
 router.get('/', async (req, res) => {
-  const { rows } = await pool.query('SELECT * FROM jobs ORDER BY created_at DESC');
-  res.json(rows);
+    try {
+        const jobs = await getAllJobs();
+        res.json({ success: true, jobs });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to get jobs' });
+    }
 });
 
-// Only employers can create jobs
-router.post('/', requireAuth, async (req, res) => {
-  if (req.user?.role !== 'employer') return res.status(403).json({ error: 'Employer token required' });
-  const { employer_id, title, description, location, employment_type } = req.body;
-  if (!employer_id || !title || !description) return res.status(400).json({ error: 'Missing fields' });
-  const { rows } = await pool.query(
-    `INSERT INTO jobs (employer_id, title, description, location, employment_type)
-     VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-    [employer_id, title, description, location || null, employment_type || null]
-  );
-  res.status(201).json(rows[0]);
+// Route to get a single job by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const job = await getJobById(req.params.id);
+        if (job) {
+            res.json({ success: true, job });
+        } else {
+            res.status(404).json({ success: false, message: 'Job not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to get job' });
+    }
 });
 
-export default router;
+// Route to create a new job
+router.post('/', async (req, res) => {
+    try {
+        const newJob = await createJob(req.body);
+        res.status(201).json({ success: true, job: newJob });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to create job' });
+    }
+});
 
+// Route to apply for a job
+router.post('/:id/apply', async (req, res) => {
+    try {
+        // Assuming you have user authentication and the user ID is available in req.user.id
+        const userId = req.user ? req.user.id : null;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'Please login to apply' });
+        }
 
+        const job = await getJobById(req.params.id);
+        if (!job) {
+            return res.status(404).json({ success: false, message: 'Job not found' });
+        }
+
+        const applicationData = {
+            job_id: req.params.id,
+            user_id: userId,
+            ...req.body
+        };
+
+        const newApplication = await createApplication(applicationData);
+        res.status(201).json({ success: true, application: newApplication });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to apply for job' });
+    }
+});
+
+module.exports = router;
