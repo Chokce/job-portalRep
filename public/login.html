@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - JobConnect</title>
+    <title>Login - JobConnect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="public/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>
@@ -44,8 +44,8 @@
                 </nav>
 
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
-                    <a href="register.html" class="btn btn-primary active" id="register-link">Register</a>
+                    <a href="login.html" class="btn btn-outline active" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
                     <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
                     <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
                 </div>
@@ -55,46 +55,30 @@
 
     <main class="auth-container">
         <div class="auth-box">
-            <h2>Create Account</h2>
-            <form id="registerForm">
+            <h1>Welcome Back</h1>
+            <form id="loginForm">
                 <div class="form-group">
-                    <input type="text" id="firstName" placeholder="First Name" required>
+                    <input type="email" name="email" id="email" placeholder="Email Address" required>
                     <i class="fas fa-user"></i>
+                    <div class="validation-message"></div>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="lastName" placeholder="Last Name" required>
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="email" placeholder="Email Address" required>
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="form-group">
-                    <select id="role" required>
-                        <option value="">Select Role</option>
-                        <option value="job-seeker">Job Seeker</option>
-                        <option value="employer">Employer</option>
-                    </select>
-                    <i class="fas fa-user-tie"></i>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Password" required minlength="8">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
                     <i class="fas fa-lock"></i>
-                    <div class="validation-message">Password must be at least 8 characters long</div>
+                    <div class="validation-message"></div>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-                    <i class="fas fa-lock"></i>
+                <div class="forgot-password">
+                    <a href="#">Forgot Password?</a>
                 </div>
-                <button type="submit">Create Account</button>
+                <button type="submit">Login</button>
             </form>
             <div id="messageBox" class="message-box" style="display: none;"></div>
             <div class="link">
-                <span>Already have an account? </span>
-                <a href="login.html">Login</a>
+                <span>Don't have an account? </span>
+                <a href="register.html">Register</a>
             </div>
             <div class="social-auth">
-                <span>Or sign up with</span>
+                <span>Or continue with</span>
                 <div class="social-buttons">
                     <a href="https://facebook.com" class="social-button facebook" target="_blank" rel="noopener" title="Facebook">
                         <i class="fab fa-facebook-f"></i>
@@ -110,40 +94,31 @@
     </main>
 
     <script type="module">
-        import authService from './public/assets/js/services/auth-service.js';
+        import authService from './assets/js/services/auth-service.js';
 
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const firstName = this.querySelector('#firstName').value;
-            const lastName = this.querySelector('#lastName').value;
             const email = this.querySelector('#email').value;
-            const role = this.querySelector('#role').value;
             const password = this.querySelector('#password').value;
-            const confirmPassword = this.querySelector('#confirmPassword').value;
             const messageBox = document.getElementById('messageBox');
-
-            if (password !== confirmPassword) {
-                messageBox.className = 'message-box error';
-                messageBox.textContent = 'Passwords do not match';
-                messageBox.style.display = 'block';
-                return;
-            }
-
-            const userData = { firstName, lastName, email, role };
             
-            const result = await authService.register(email, password, userData);
+            const result = await authService.login(email, password);
             
             if (result.success) {
                 messageBox.className = 'message-box success';
-                messageBox.textContent = 'Registration successful! Redirecting to login...';
+                messageBox.textContent = 'Login successful!';
                 messageBox.style.display = 'block';
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
                 messageBox.className = 'message-box error';
-                messageBox.textContent = result.message;
+                if (result.message.includes('auth/invalid-login-credentials')) {
+                    messageBox.textContent = 'Invalid email or password. Please try again.';
+                } else {
+                    messageBox.textContent = result.message;
+                }
                 messageBox.style.display = 'block';
             }
         });
@@ -171,7 +146,7 @@
                         <li><a href="#">Job Alerts</a></li>
                     </ul>
                 </div>
-                <div class_name="footer-column">
+                <div class="footer-column">
                     <h3>For Employers</h3>
                     <ul>
                         <li><a href="post-job.html">Post a Job</a></li>
