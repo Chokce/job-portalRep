@@ -117,8 +117,11 @@ document.addEventListener('DOMContentLoaded', function() {
             jobCount.textContent = 0;
         }
     }
-
-    searchButton.addEventListener('click', performSearch);
+    
+    if(searchButton) {
+        searchButton.addEventListener('click', performSearch);
+    }
+    
     jobTypeFilter.addEventListener('change', performSearch);
     salaryFilter.addEventListener('change', performSearch);
 
