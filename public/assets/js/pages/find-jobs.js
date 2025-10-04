@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const jobTypeFilter = document.getElementById('job-type');
     const salaryFilter = document.getElementById('salary-range');
 
+    // Function to render jobs in the grid
     function renderJobs(jobs) {
-        if (jobs.length === 0) {
+        if (!jobs || jobs.length === 0) {
             jobsGrid.innerHTML = '';
             noJobsMessage.style.display = 'block';
             jobCount.textContent = 0;
@@ -24,9 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
         jobCount.textContent = jobs.length;
 
         const jobsHTML = jobs.map(job => {
-            const companyInitials = job.company.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
+            const companyInitials = (job.company || 'NA').split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase();
             const postedDate = getTimeAgo(job.createdAt);
-            const jobTypeClass = job.jobType.toLowerCase().replace(' ', '-');
+            const jobTypeClass = (job.jobType || 'other').toLowerCase().replace(' ', '-');
             
             return `
                 <div class="job-card">
@@ -34,29 +35,27 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="company-info">
                             <div class="company-logo">${companyInitials}</div>
                             <div class="company-details">
-                                <h4 class="company-name">${job.company}</h4>
-                                <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
+                                <h4 class="company-name">${job.company || 'Not Available'}</h4>
+                                <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${job.location || 'Not Specified'}</p>
                             </div>
                         </div>
-                        <div class="job-actions">
-                            <button class="save-job" title="Save Job"><i class="far fa-heart"></i></button>
-                        </div>
+                        <button class="save-job" title="Save Job"><i class="far fa-heart"></i></button>
                     </div>
                     <div class="job-content">
                         <h3 class="job-title">${job.title}</h3>
-                        <p class="job-description">${job.description.substring(0, 150)}${job.description.length > 150 ? '...' : ''}</p>
+                        <p class="job-description">${(job.description || '').substring(0, 150)}${job.description && job.description.length > 150 ? '...' : ''}</p>
                     </div>
                     <div class="job-details">
                         <div class="job-info">
-                            <span class="salary"><i class="fas fa-dollar-sign"></i> ${job.salaryMin} - ${job.salaryMax}</span>
-                            <span class="job-type"><i class="fas fa-clock"></i> ${job.jobType}</span>
+                             <span class="salary">${job.salaryMin ? `ZMW ${job.salaryMin} - ${job.salaryMax}` : 'Salary not specified'}</span>
+                            <span class="job-type"><i class="fas fa-clock"></i> ${job.jobType || 'N/A'}</span>
                         </div>
                         <div class="job-meta">
                             <span class="posted-date">${postedDate}</span>
                         </div>
                     </div>
                     <div class="job-footer">
-                        <span class="job-type-badge ${jobTypeClass}">${jobTypeClass}</span>
+                        <span class="job-type-badge ${jobTypeClass}">${job.jobType || 'N/A'}</span>
                         <a href="job-details.html?id=${job.id}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
@@ -66,22 +65,12 @@ document.addEventListener('DOMContentLoaded', function() {
         jobsGrid.innerHTML = jobsHTML;
     }
 
+    // Utility to calculate time ago
     function getTimeAgo(date) {
         if (!date) return 'Date not available';
 
-        let dateObj;
-        if (date && date._seconds) {
-            dateObj = new Date(date._seconds * 1000);
-        } else if (date && typeof date.toDate === 'function') {
-            dateObj = date.toDate();
-        } else if (date instanceof Date) {
-            dateObj = date;
-        } else {
-            dateObj = new Date(date);
-            if (isNaN(dateObj)) {
-                return 'Invalid date';
-            }
-        }
+        let dateObj = date instanceof Date ? date : new Date(date);
+        if (isNaN(dateObj)) return 'Invalid date';
 
         const now = new Date();
         const diffTime = Math.abs(now - dateObj);
@@ -89,10 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (diffDays === 1) return 'Posted 1 day ago';
         if (diffDays < 7) return `Posted ${diffDays} days ago`;
-        if (diffDays < 30) return `Posted ${Math.ceil(diffDays / 7)} week${Math.ceil(diffDays / 7) > 1 ? 's' : ''} ago`;
-        return `Posted ${Math.ceil(diffDays / 30)} month${Math.ceil(diffDays / 30) > 1 ? 's' : ''} ago`;
+        if (diffDays < 30) return `Posted ${Math.ceil(diffDays / 7)} weeks ago`;
+        return `Posted ${Math.ceil(diffDays / 30)} months ago`;
     }
 
+    // Main function to perform job search
     async function performSearch() {
         loadingMessage.style.display = 'block';
         jobsGrid.innerHTML = '';
@@ -109,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         loadingMessage.style.display = 'none';
 
-        if (result.success) {
+        if (result.success && result.jobs) {
             renderJobs(result.jobs);
         } else {
             console.error(result.message);
@@ -118,23 +108,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // ---- EVENT LISTENERS ----
     if(searchButton) {
         searchButton.addEventListener('click', performSearch);
+    } else {
+        console.error('Search button not found!');
     }
     
-    jobTypeFilter.addEventListener('change', performSearch);
-    salaryFilter.addEventListener('change', performSearch);
+    if (jobTypeFilter) {
+        jobTypeFilter.addEventListener('change', performSearch);
+    }
 
+    if (salaryFilter) {
+        salaryFilter.addEventListener('change', performSearch);
+    }
+
+    // ---- INITIALIZATION ----
     function initialize() {
         const urlParams = new URLSearchParams(window.location.search);
         const keyword = urlParams.get('keyword');
         const location = urlParams.get('location');
 
-        if (keyword || location) {
-            keywordInput.value = keyword || '';
-            locationInput.value = location || '';
+        if (keyword) {
+            keywordInput.value = keyword;
+        }
+        if (location) {
+            locationInput.value = location;
         }
 
+        // Automatically perform a search when the page loads
         performSearch();
     }
 

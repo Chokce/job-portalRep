@@ -117,22 +117,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
-    const searchButton = document.querySelector('.search-box button');
-    if(searchButton) {
-        searchButton.addEventListener('click', function() {
-            const keyword = document.querySelector('.search-box input:first-of-type').value;
-            const location = document.querySelector('.search-box input:nth-of-type(2)').value;
-            
-            if (keyword || location) {
-                alert(`Searching for jobs with keyword: ${keyword} in location: ${location}`);
-                
-                window.scrollTo({
-                    top: document.getElementById('jobs').offsetTop - 70,
-                    behavior: 'smooth'
-                });
-            } else {
-                alert('Please enter a job title, keyword, or location to search.');
-            }
+    const searchJobsBtn = document.getElementById('search-jobs-btn');
+    if (searchJobsBtn) {
+        searchJobsBtn.addEventListener('click', function() {
+            const keyword = document.getElementById('keyword-input').value;
+            const location = document.getElementById('location-input').value;
+            const searchURL = `find-jobs.html?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+            window.location.href = searchURL;
         });
     }
 
@@ -178,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const result = await JobService.getJobs();
     if (result.success) {
-        renderJobs(result.jobs);
+        renderJobs(result.jobs.slice(0, 6)); // Display only the first 6 jobs
     } else {
         console.error(result.message);
     }

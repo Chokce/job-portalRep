@@ -1,7 +1,8 @@
-// Job application page functionality
-import { showError, showSuccess, validateEmail } from '../utils/helpers.js';
 
-export class ApplyPage {
+import { showError, showSuccess, validateEmail } from '../utils/helpers.js';
+import JobService from '../services/job-service.js';
+
+class ApplyPage {
     constructor(jobService) {
         this.jobService = jobService;
         this.jobId = this.getJobIdFromUrl();
@@ -23,7 +24,6 @@ export class ApplyPage {
             return;
         }
 
-        // Check if user is logged in
         if (!window.auth.currentUser) {
             window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.href)}`;
             return;
@@ -40,16 +40,13 @@ export class ApplyPage {
         if (!jobTitle || !companyName) return;
 
         try {
-            const result = await this.jobService.getJobById(this.jobId);
+            const result = await this.jobService.getJob(this.jobId);
             
             if (result.success) {
-                jobTitle.textContent = result.data.title;
-                companyName.textContent = result.data.company || 'the company';
-                // keep employer id for apply
-                this.jobEmployerId = result.data.postedBy || result.data.employerId || null;
-                
-                // Update page title
-                document.title = `Apply for ${result.data.title} at ${result.data.company || 'Company'} | JobConnect`;
+                jobTitle.textContent = result.job.title;
+                companyName.textContent = result.job.company || 'the company';
+                this.jobEmployerId = result.job.postedBy || result.job.employerId || null;
+                document.title = `Apply for ${result.job.title} at ${result.job.company || 'Company'} | JobConnect`;
             } else {
                 showError('Failed to load job details');
                 window.location.href = '/find-jobs.html';
@@ -61,22 +58,19 @@ export class ApplyPage {
     }
 
     setupEventListeners() {
-        // Resume upload preview
         if (this.resumeInput && this.resumePreview) {
             this.resumeInput.addEventListener('change', (e) => this.handleResumeUpload(e));
         }
 
-        // Form submission
         if (this.applicationForm) {
             this.applicationForm.addEventListener('submit', (e) => this.handleSubmit(e));
         }
 
-        // Cancel button
         const cancelBtn = document.getElementById('cancel-btn');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+                if (confirm('Are you sure you want to cancel?')) {
                     window.history.back();
                 }
             });
@@ -87,7 +81,6 @@ export class ApplyPage {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Check file type (PDF, DOC, DOCX)
         const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
         if (!validTypes.includes(file.type)) {
             showError('Please upload a valid resume file (PDF, DOC, or DOCX)');
@@ -95,7 +88,6 @@ export class ApplyPage {
             return;
         }
 
-        // Check file size (max 5MB)
         const maxSize = 5 * 1024 * 1024; // 5MB
         if (file.size > maxSize) {
             showError('File size should not exceed 5MB');
@@ -103,7 +95,6 @@ export class ApplyPage {
             return;
         }
 
-        // Display file info
         this.resumePreview.innerHTML = `
             <div class="file-info">
                 <i class="fas fa-file-alt"></i>
@@ -117,7 +108,6 @@ export class ApplyPage {
             </button>
         `;
 
-        // Add event listener for remove button
         const removeBtn = this.resumePreview.querySelector('#remove-resume');
         if (removeBtn) {
             removeBtn.addEventListener('click', () => this.removeResume());
@@ -143,27 +133,23 @@ export class ApplyPage {
 
     validateForm(formData) {
         const errors = [];
-        
-        // Required fields
         const requiredFields = ['fullName', 'email', 'phone'];
+
         requiredFields.forEach(field => {
             if (!formData.get(field)?.trim()) {
                 errors.push(`${this.formatFieldName(field)} is required`);
             }
         });
 
-        // Email validation
         if (formData.get('email') && !validateEmail(formData.get('email'))) {
             errors.push('Please enter a valid email address');
         }
 
-        // Phone validation (simple check)
         const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/;
         if (formData.get('phone') && !phoneRegex.test(formData.get('phone'))) {
             errors.push('Please enter a valid phone number');
         }
 
-        // Resume file check
         if (!this.resumeInput.files || this.resumeInput.files.length === 0) {
             errors.push('Please upload your resume');
         }
@@ -172,10 +158,7 @@ export class ApplyPage {
     }
 
     formatFieldName(field) {
-        return field
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, str => str.toUpperCase())
-            .trim();
+        return field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
     }
 
     async handleSubmit(event) {
@@ -189,44 +172,44 @@ export class ApplyPage {
             return;
         }
 
-        // Show loading state
         const submitBtn = this.applicationForm.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.innerHTML;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
 
         try {
-            // Create application document in Firestore
-            const applicant = {
-                uid: window.auth.currentUser.uid,
-                email: window.auth.currentUser.email || null,
-                employerId: this.jobEmployerId || null
+            const applicationData = {
+                jobId: this.jobId,
+                userId: window.auth.currentUser.uid,
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                coverLetter: formData.get('coverLetter'),
+                employerId: this.jobEmployerId
             };
-            const res = await this.jobService.applyToJob(this.jobId, applicant);
-            if (!res.success) throw new Error(res.error || 'Failed to submit application');
-            
-            // Show success message
-            showSuccess('Application submitted successfully!');
-            
-            // Redirect to dashboard after a short delay
-            setTimeout(() => {
-                window.location.href = '/dashboard.html?tab=applications';
-            }, 2000);
-            
+
+            const res = await this.jobService.applyForJob(applicationData);
+
+            if (res.success) {
+                showSuccess('Application submitted successfully!');
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html?tab=applications';
+                }, 2000);
+            } else {
+                throw new Error(res.message || 'Failed to submit application');
+            }
         } catch (error) {
             console.error('Error submitting application:', error);
-            showError('Failed to submit application. Please try again.');
+            showError(error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnText;
         }
     }
 }
 
-// Initialize apply page when DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
+
+document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('application-form')) {
-        const JobServiceModule = await import('../services/job-service.js');
-        const JobService = JobServiceModule.default || JobServiceModule.JobService;
-        new ApplyPage(new JobService());
+        new ApplyPage(JobService);
     }
 });

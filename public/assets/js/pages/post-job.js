@@ -1,17 +1,33 @@
-  
+
 import JobService from '../services/job-service.js';
 import { serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 import { auth } from '../firebase-init.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const jobForm = document.getElementById('jobPostForm');
     const previewBtn = document.getElementById('previewBtn');
+    const submitBtn = document.querySelector('.submit-job-btn');
+    let currentUser = null;
+
+    // Listen for authentication state changes
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in.
+            currentUser = user;
+            submitBtn.disabled = false;
+        } else {
+            // User is signed out.
+            currentUser = null;
+            submitBtn.disabled = true;
+        }
+    });
 
     jobForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        if (!auth.currentUser) {
-            alert('You must be logged in to post a job.');
+        if (!currentUser) {
+            alert('You must be logged in to post a job. Please wait for authentication to complete or log in.');
             return;
         }
 
@@ -31,13 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const submitBtn = document.querySelector('.submit-job-btn');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting Job...';
         submitBtn.disabled = true;
 
         jobData.createdAt = serverTimestamp();
-        jobData.postedBy = auth.currentUser.uid;
+        jobData.postedBy = currentUser.uid; // Use the reliable user object
 
         const result = await JobService.addJob(jobData);
 
@@ -45,11 +60,15 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Job posted successfully!');
             jobForm.reset();
         } else {
-            alert('Error: ' + result.message);
+            // The error from Firestore will be more specific now if it still fails
+            alert('Error posting job: ' + result.message);
         }
 
         submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+        // Re-enable based on auth state, not just after submission
+        if (currentUser) {
+            submitBtn.disabled = false;
+        }
     });
     
     previewBtn.addEventListener('click', function() {
