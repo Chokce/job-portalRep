@@ -1,5 +1,7 @@
 
 import JobService from '../services/job-service.js';
+import { db } from '../firebase-init.js';
+import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     const mobileMenu = document.getElementById('mobile-menu');
@@ -90,18 +92,33 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const applyForm = document.getElementById('apply-form');
     if(applyForm) {
-        applyForm.addEventListener('submit', function(e) {
+        applyForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const name = document.getElementById('applicant-name').value;
             const email = document.getElementById('applicant-email').value;
             const cv = document.getElementById('applicant-cv').files[0];
+            const jobTitle = document.getElementById('apply-job-title').textContent;
+
             if (!name || !email || !cv) {
                 alert('Please fill all fields and upload your CV.');
                 return;
             }
-            alert('Application submitted! (Demo only, no backend)');
-            document.getElementById('apply-modal').style.display = 'none';
-            this.reset();
+
+            try {
+                await addDoc(collection(db, "applications"), {
+                    name: name,
+                    email: email,
+                    jobTitle: jobTitle,
+                    cv: cv.name,
+                    appliedAt: new Date()
+                });
+                alert('Application submitted successfully!');
+                document.getElementById('apply-modal').style.display = 'none';
+                this.reset();
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert('Error submitting application. Please try again.');
+            }
         });
     }
 
