@@ -1,7 +1,8 @@
 
 import JobService from '../services/job-service.js';
-import { db } from '../firebase-init.js';
+import { db, storage } from '../firebase-init.js';
 import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
+import { ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     const mobileMenu = document.getElementById('mobile-menu');
@@ -104,20 +105,30 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
 
+            const submitBtn = applyForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
             try {
+                const cvRef = ref(storage, `cvs/${cv.name}`);
+                await uploadBytes(cvRef, cv);
+                const cvUrl = await getDownloadURL(cvRef);
+
                 await addDoc(collection(db, "applications"), {
                     name: name,
                     email: email,
                     jobTitle: jobTitle,
-                    cv: cv.name,
+                    cv: cvUrl,
                     appliedAt: new Date()
                 });
                 alert('Application submitted successfully!');
-                document.getElementById('apply-modal').style.display = 'none';
-                this.reset();
+                window.location.reload();
             } catch (error) {
                 console.error("Error adding document: ", error);
                 alert('Error submitting application. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }

@@ -1,94 +1,76 @@
 import { Router } from 'express';
-import { pool } from '../lib/db.js';
+import { firestore, storage } from '../lib/firebase.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 import multer from 'multer';
-import path from 'path';
-import url from 'url';
-import fs from 'fs';
 
 const router = Router();
 
-// Multer storage setup
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadsRoot = path.join(__dirname, '..', '..', 'uploads');
-if (!fs.existsSync(uploadsRoot)) {
-  fs.mkdirSync(uploadsRoot, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsRoot),
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname) || '.pdf';
-    cb(null, `cv-${unique}${ext}`);
-  }
-});
-const upload = multer({ storage });
+// Multer setup for memory storage
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 
-// Public: list all applications (optionally filter by job_id)
+// Public: list all applications
 router.get('/', async (req, res) => {
-  const { job_id } = req.query;
-  if (job_id) {
-    const { rows } = await pool.query('SELECT * FROM applications WHERE job_id=$1 ORDER BY created_at DESC', [job_id]);
-    return res.json(rows);
-  }
-  const { rows } = await pool.query('SELECT * FROM applications ORDER BY created_at DESC');
-  res.json(rows);
-});
-
-// User: list my applications
-router.get('/me', requireAuth, async (req, res) => {
-  if (req.user?.role !== 'user') return res.status(403).json({ error: 'User token required' });
-  const { rows } = await pool.query('SELECT * FROM applications WHERE user_id=$1 ORDER BY created_at DESC', [req.user.sub]);
-  res.json(rows);
-});
-
-// Employer: list applications for my jobs
-router.get('/employer', requireAuth, async (req, res) => {
-  if (req.user?.role !== 'employer') return res.status(403).json({ error: 'Employer token required' });
-  const { rows } = await pool.query(
-    `SELECT 
-       a.id,
-       a.created_at,
-       a.cv_url,
-       a.cover_letter,
-       j.id AS job_id,
-       j.title AS job_title,
-       u.id AS user_id,
-       u.full_name AS user_name,
-       u.email AS user_email
-     FROM applications a
-     JOIN jobs j ON j.id = a.job_id
-     JOIN users u ON u.id = a.user_id
-     WHERE j.employer_id = $1
-     ORDER BY a.created_at DESC`,
-    [req.user.sub]
-  );
-  res.json(rows);
-});
-
-// Only a logged-in user can apply; user_id must match token
-router.post('/', requireAuth, upload.single('cv'), async (req, res) => {
-  if (req.user?.role !== 'user') return res.status(403).json({ error: 'User token required' });
-  const { job_id, user_id, cover_letter } = req.body;
-  if (!job_id || !user_id) return res.status(400).json({ error: 'Missing fields' });
-  if (Number(user_id) !== Number(req.user.sub)) return res.status(403).json({ error: 'user_id mismatch' });
-  const filePath = req.file ? `/uploads/${req.file.filename}` : null;
   try {
-    const { rows } = await pool.query(
-      `INSERT INTO applications (job_id, user_id, cv_url, cover_letter)
-       VALUES ($1,$2,$3,$4)
-       ON CONFLICT (job_id, user_id) DO NOTHING
-       RETURNING *`,
-      [job_id, user_id, filePath, cover_letter || null]
-    );
-    if (!rows.length) return res.status(409).json({ error: 'Already applied' });
-    res.status(201).json(rows[0]);
-  } catch (err) {
+    const snapshot = await firestore.collection('applications').orderBy('appliedAt', 'desc').get();
+    const applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(applications);
+  } catch (err) { 
     res.status(500).json({ error: err.message });
   }
 });
 
+
+// Create a new application
+router.post('/', upload.single('cv'), async (req, res) => {
+  const { job_id, user_id, cover_letter, name, email } = req.body;
+  if (!job_id || !name || !email) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  if (!req.file) {
+    return res.status(400).json({ error: 'CV is required' });
+  }
+
+  try {
+    // Upload CV to Firebase Storage
+    const bucket = storage.bucket();
+    const blob = bucket.file(`cvs/${Date.now()}-${req.file.originalname}`);
+    const blobStream = blob.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+    });
+
+    blobStream.on('error', (err) => {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to upload CV' });
+    });
+
+    blobStream.on('finish', async () => {
+        const cv_url = await blob.getSignedUrl({ action: 'read', expires: '03-09-2491' }).then(urls => urls[0]);
+
+        // Save application to Firestore
+        const application = {
+          job_id,
+          user_id: user_id || null, // User may not be logged in
+          name,
+          email,
+          cv_url,
+          cover_letter: cover_letter || null,
+          appliedAt: new Date()
+        };
+        const docRef = await firestore.collection('applications').add(application);
+
+        res.status(201).json({ id: docRef.id, ...application });
+    });
+
+    blobStream.end(req.file.buffer);
+
+  } catch (err) {
+    console.error(err); // Log the full error
+    res.status(500).json({ error: 'Failed to submit application' });
+  }
+});
+
+
 export default router;
-
-
