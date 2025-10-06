@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information - Job Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-briefcase"></i>
+                    <a href="index.html">JobConnect</a>
+                </div>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <nav>
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="find-jobs.html" class="nav-link">Find Jobs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="post-job.html" class="nav-link">Post a Job</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="career-advice.html" class="nav-link">Career Advice</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="about.html" class="nav-link">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="students.html" class="nav-link active">Students</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn btn-outline" id="login-link">Login</a>
+                    <a href="register.html" class="btn btn-primary" id="register-link">Register</a>
+                    <a href="dashboard.html" class="btn btn-primary" id="dashboard-link" style="display: none;">Dashboard</a>
+                    <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-section text-center">
+            <h1>Student Information</h1>
+            <p>Details of our talented students ready to make an impact.</p>
+        </section>
+
+        <section class="student-list">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Major</th>
+                        <th>Expected Graduation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Phiri</td>
+                        <td>1910871</td>
+                        <td>BICTE</td>
+                        <td>2026</td>
+                    </tr>
+                    <tr>
+                        <td>Mushitu Doris</td>
+                        <td>1910902</td>
+                        <td>BICTE</td>
+                        <td>2026</td>
+                    </tr>
+                    <tr>
+                        <td>Lubinda Thelma</td>
+                        <td>1910777</td>
+                        <td>BICTE</td>
+                        <td>2026</td>
+                    </tr>
+                    <tr>
+                        <td>Lungu Lowani</td>
+                        <td>1910873</td>
+                        <td>BICTE</td>
+                        <td>2026</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="assets/js/firebase-init.js" type="module"></script>
+</body>
+</html>
